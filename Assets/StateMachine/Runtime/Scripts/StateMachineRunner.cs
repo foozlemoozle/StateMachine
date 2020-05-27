@@ -7,32 +7,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StateMachineRunner : MonoBehaviour
+namespace com.keg.statemachine
 {
-    private StateMachine _rootStateMachine;
-
-    public IStateMachine stateMachine => _rootStateMachine;
-
-    // Start is called before the first frame update
-    void Awake()
+    public class StateMachineRunner : MonoBehaviour
     {
-        _rootStateMachine = new StateMachine();
-    }
+        private StateMachine _rootStateMachine;
 
-    private void OnEnable()
-    {
-        _rootStateMachine.Setup();
-    }
+        public IStateMachine stateMachine => _rootStateMachine;
 
-    // Update is called once per frame
-    void Update()
-    {
-        _rootStateMachine.Update();
-        Heartbeat.Tick();
-    }
+        // Start is called before the first frame update
+        void Awake()
+        {
+            _rootStateMachine = new StateMachine();
+        }
 
-    private void OnDisable()
-    {
-        _rootStateMachine.Teardown();
+        private void OnEnable()
+        {
+            _rootStateMachine.Setup();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            _rootStateMachine.Update();
+            Heartbeat.Tick();
+        }
+
+        private void OnDisable()
+        {
+            _rootStateMachine.Teardown();
+        }
     }
 }

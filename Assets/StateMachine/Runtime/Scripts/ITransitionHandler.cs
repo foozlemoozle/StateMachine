@@ -3,9 +3,12 @@
  * Interface for a class that manages transitions.
  **/
 
-public interface ITransitionHandler
+namespace com.keg.statemachine
 {
-    StateTransition transition { get; }
-    bool TrySetTransition( StateTransition transition );
-    void RemoveTransition();
+    public interface ITransitionHandler
+    {
+        StateTransition transition { get; }
+        bool TrySetTransition( StateTransition transition );
+        void RemoveTransition();
+    }
 }

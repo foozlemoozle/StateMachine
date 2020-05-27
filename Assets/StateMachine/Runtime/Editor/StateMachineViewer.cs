@@ -8,78 +8,81 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class StateMachineViewer : EditorWindow
+namespace com.keg.statemachine
 {
-    [MenuItem( "StateMachine/StateMachine Viewer" )]
-    public static void ShowWindow()
+    public class StateMachineViewer : EditorWindow
     {
-        EditorWindow.GetWindow<StateMachineViewer>();
-    }
-
-    private StateMachineRunner _runner;
-
-    private void OnGUI()
-    {
-        if( !Application.isPlaying )
+        [MenuItem( "StateMachine/StateMachine Viewer" )]
+        public static void ShowWindow()
         {
-            DisplayMessage( "Application needs to be running!", Color.yellow );
-            return;
+            EditorWindow.GetWindow<StateMachineViewer>();
         }
 
-        if( _runner == null )
-        {
-            StateMachineRunner[] searchResults = Resources.FindObjectsOfTypeAll<StateMachineRunner>();
-            if( searchResults.Length == 1 )
-            {
-                _runner = searchResults[ 0 ];
-            }
-            else if( searchResults.Length > 1 )
-            {
-                DisplayMessage(
-                    string.Format( "FOUND {0} INSTANCES OF StateMachineRunner.  THERE SHOULD ONLY BE ONE.", searchResults.Length ),
-                    Color.red
-                    );
+        private StateMachineRunner _runner;
 
+        private void OnGUI()
+        {
+            if( !Application.isPlaying )
+            {
+                DisplayMessage( "Application needs to be running!", Color.yellow );
                 return;
             }
-            else
+
+            if( _runner == null )
             {
-                DisplayMessage( "No state machines!", Color.yellow );
-                return;
-            }
-        }
-
-        DisplayMessage( "Top", Color.black );
-
-        GUIStyle cyan = new GUIStyle( EditorStyles.label );
-        cyan.normal.textColor = Color.blue;
-
-        string[] states = _runner.stateMachine.GetStateNames();
-        int count = states.Length;
-        for( int i = 0; i < count; ++i )
-        {
-            if( GUILayout.Button( states[ i ], cyan ) )
-            {
-                var results = AssetDatabase.FindAssets( states[ i ] + ".cs" );
-                if( results.Length > 0 )
+                StateMachineRunner[] searchResults = Resources.FindObjectsOfTypeAll<StateMachineRunner>();
+                if( searchResults.Length == 1 )
                 {
-                    MonoScript script = AssetDatabase.LoadAssetAtPath<MonoScript>( results[ 0 ] );
-                    if( script != null )
+                    _runner = searchResults[ 0 ];
+                }
+                else if( searchResults.Length > 1 )
+                {
+                    DisplayMessage(
+                        string.Format( "FOUND {0} INSTANCES OF StateMachineRunner.  THERE SHOULD ONLY BE ONE.", searchResults.Length ),
+                        Color.red
+                        );
+
+                    return;
+                }
+                else
+                {
+                    DisplayMessage( "No state machines!", Color.yellow );
+                    return;
+                }
+            }
+
+            DisplayMessage( "Top", Color.white );
+
+            GUIStyle cyan = new GUIStyle( EditorStyles.label );
+            cyan.normal.textColor = Color.cyan;
+
+            string[] states = _runner.stateMachine.GetStateNames();
+            int count = states.Length;
+            for( int i = 0; i < count; ++i )
+            {
+                if( GUILayout.Button( states[ i ], cyan ) )
+                {
+                    var results = AssetDatabase.FindAssets( states[ i ] + ".cs" );
+                    if( results.Length > 0 )
                     {
-                        AssetDatabase.OpenAsset( script.GetInstanceID() );
+                        MonoScript script = AssetDatabase.LoadAssetAtPath<MonoScript>( results[ 0 ] );
+                        if( script != null )
+                        {
+                            AssetDatabase.OpenAsset( script.GetInstanceID() );
+                        }
                     }
                 }
             }
+
+            DisplayMessage( "Bottom", Color.white );
         }
 
-        DisplayMessage( "Bottom", Color.black );
-    }
+        private void DisplayMessage( string msg, Color color )
+        {
+            GUIStyle lblClr = new GUIStyle( EditorStyles.label );
+            lblClr.normal.textColor = color;
 
-    private void DisplayMessage( string msg, Color color )
-    {
-        GUIStyle lblClr = new GUIStyle( EditorStyles.label );
-        lblClr.normal.textColor = color;
-
-        EditorGUILayout.LabelField( msg, lblClr );
+            EditorGUILayout.LabelField( msg, lblClr );
+        }
     }
 }

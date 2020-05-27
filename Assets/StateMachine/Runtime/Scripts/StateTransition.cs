@@ -3,21 +3,24 @@
  * Data object for transitions
  **/
 
-public abstract class StateTransition
+namespace com.keg.statemachine
 {
-    public ITransitionHandler owner;
-
-    public abstract void Start();
-
-    // instantly end the transition
-    public virtual void KillTransition()
+    public abstract class StateTransition
     {
-        owner.RemoveTransition();
-    }
+        public ITransitionHandler owner;
 
-    // start the transition end process
-    public virtual void EndTransition()
-    {
-        owner.RemoveTransition();
+        public abstract void Start();
+
+        // instantly end the transition
+        public virtual void KillTransition()
+        {
+            owner.RemoveTransition();
+        }
+
+        // start the transition end process
+        public virtual void EndTransition()
+        {
+            owner.RemoveTransition();
+        }
     }
 }

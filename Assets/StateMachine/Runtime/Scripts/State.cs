@@ -4,66 +4,69 @@
  * It is not requied to use this class as a base to utilize a state machine
  */
 
-public class State : IState
+namespace com.keg.statemachine
 {
-    public IStateMachine owner { get; set; }
-    public bool pendingPop { get; set; }
-
-    public virtual void PreTransitionIn()
+    public class State : IState
     {
-    }
+        public IStateMachine owner { get; set; }
+        public bool pendingPop { get; set; }
 
-    public virtual StateTransition TransitionIn( StateTransition transition )
-    {
-        if( transition != null )
+        public virtual void PreTransitionIn()
         {
-            transition.EndTransition();
         }
-        return null;
-    }
 
-    public virtual void OnEnterState()
-    {
-    }
-
-    public virtual void OnBecomeActive()
-    {
-    }
-
-    public virtual void ActiveUpdate()
-    {
-    }
-
-    public virtual void UniversalUpdate()
-    {
-    }
-
-    public virtual void ActiveHeartbeat()
-    {
-    }
-
-    public virtual void UniversalHeartbeat()
-    {
-    }
-
-    public virtual void OnBecomeInactive()
-    {
-    }
-
-    public virtual void OnExitState()
-    {
-    }
-
-    public virtual StateTransition TransitionOut( StateTransition transition )
-    {
-        if( transition != null )
+        public virtual StateTransition TransitionIn( StateTransition transition )
         {
-            transition.EndTransition();
+            if( transition != null )
+            {
+                transition.EndTransition();
+            }
+            return null;
         }
-        return null;
-    }
 
-    public virtual void OnStateComplete()
-    {
+        public virtual void OnEnterState()
+        {
+        }
+
+        public virtual void OnBecomeActive()
+        {
+        }
+
+        public virtual void ActiveUpdate()
+        {
+        }
+
+        public virtual void UniversalUpdate()
+        {
+        }
+
+        public virtual void ActiveHeartbeat()
+        {
+        }
+
+        public virtual void UniversalHeartbeat()
+        {
+        }
+
+        public virtual void OnBecomeInactive()
+        {
+        }
+
+        public virtual void OnExitState()
+        {
+        }
+
+        public virtual StateTransition TransitionOut( StateTransition transition )
+        {
+            if( transition != null )
+            {
+                transition.EndTransition();
+            }
+            return null;
+        }
+
+        public virtual void OnStateComplete()
+        {
+        }
     }
 }

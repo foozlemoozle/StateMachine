@@ -6,85 +6,88 @@
 
 using System.Collections.Generic;
 
-public class Heartbeat
+namespace com.keg.statemachine
 {
-    public delegate void Action();
-
-    //frame rate is used to decide how many staggered heartbeats.
-    //this value should be LESS THAN your target frame rate.
-    //Heartbeat length is equal to this number of Update calls.
-    private static readonly int _TICKS_PER_BEAT = 30;
-    private static Heartbeat _instance;
-
-    private int _curFrame = 0;
-    private int _eventIndex = 0;
-
-    private Action[] _events;
-    private Dictionary<Action, int> _callbackToTickMap;
-
-    private Heartbeat()
+    public class Heartbeat
     {
-        _events = new Action[ _TICKS_PER_BEAT ];
-        _callbackToTickMap = new Dictionary<Action, int>();
-    }
+        public delegate void Action();
 
-    private static void InstantiateIfNeeded()
-    {
-        if( _instance == null )
+        //frame rate is used to decide how many staggered heartbeats.
+        //this value should be LESS THAN your target frame rate.
+        //Heartbeat length is equal to this number of Update calls.
+        private static readonly int _TICKS_PER_BEAT = 30;
+        private static Heartbeat _instance;
+
+        private int _curFrame = 0;
+        private int _eventIndex = 0;
+
+        private Action[] _events;
+        private Dictionary<Action, int> _callbackToTickMap;
+
+        private Heartbeat()
         {
-            _instance = new Heartbeat();
+            _events = new Action[ _TICKS_PER_BEAT ];
+            _callbackToTickMap = new Dictionary<Action, int>();
         }
-    }
 
-    public static void Tick()
-    {
-        InstantiateIfNeeded();
-
-        if( _instance._events[ _instance._curFrame ] != null )
+        private static void InstantiateIfNeeded()
         {
-            _instance._events[ _instance._curFrame ]();
-            ++_instance._curFrame;
-        }
-        else
-        {
-            _instance._curFrame = 0;
-        }
-    }
-
-    public static void Register( Action callback )
-    {
-        InstantiateIfNeeded();
-
-        if( !_instance._callbackToTickMap.ContainsKey( callback ) )
-        {
-            if( _instance._eventIndex >= _TICKS_PER_BEAT )
+            if( _instance == null )
             {
-                _instance._eventIndex = 0;
+                _instance = new Heartbeat();
             }
-
-            _instance._callbackToTickMap.Add( callback, _instance._eventIndex );
-
-            if( _instance._events[ _instance._eventIndex ] == null )
-            {
-                _instance._events[ _instance._eventIndex ] = _instance.NoOp;
-            }
-            _instance._events[ _instance._eventIndex ] += callback;
-
-            ++_instance._eventIndex;
         }
-    }
 
-    public static void Deregister( Action callback )
-    {
-        InstantiateIfNeeded();
-
-        if( _instance._callbackToTickMap.ContainsKey( callback ) )
+        public static void Tick()
         {
-            int index = _instance._callbackToTickMap[ callback ];
-            _instance._callbackToTickMap.Remove( callback );
-            _instance._events[ index ] -= callback;
-        }
-    }
+            InstantiateIfNeeded();
 
-    private void NoOp() { }
+            if( _instance._events[ _instance._curFrame ] != null )
+            {
+                _instance._events[ _instance._curFrame ]();
+                ++_instance._curFrame;
+            }
+            else
+            {
+                _instance._curFrame = 0;
+            }
+        }
+
+        public static void Register( Action callback )
+        {
+            InstantiateIfNeeded();
+
+            if( !_instance._callbackToTickMap.ContainsKey( callback ) )
+            {
+                if( _instance._eventIndex >= _TICKS_PER_BEAT )
+                {
+                    _instance._eventIndex = 0;
+                }
+
+                _instance._callbackToTickMap.Add( callback, _instance._eventIndex );
+
+                if( _instance._events[ _instance._eventIndex ] == null )
+                {
+                    _instance._events[ _instance._eventIndex ] = _instance.NoOp;
+                }
+                _instance._events[ _instance._eventIndex ] += callback;
+
+                ++_instance._eventIndex;
+            }
+        }
+
+        public static void Deregister( Action callback )
+        {
+            InstantiateIfNeeded();
+
+            if( _instance._callbackToTickMap.ContainsKey( callback ) )
+            {
+                int index = _instance._callbackToTickMap[ callback ];
+                _instance._callbackToTickMap.Remove( callback );
+                _instance._events[ index ] -= callback;
+            }
+        }
+
+        private void NoOp() { }
+    }
 }
