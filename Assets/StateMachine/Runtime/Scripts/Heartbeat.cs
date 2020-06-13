@@ -42,14 +42,18 @@ namespace com.keg.statemachine
         {
             InstantiateIfNeeded();
 
-            if( _instance._events[ _instance._curFrame ] != null )
+            if( _instance._curFrame < _instance._events.Length && _instance._events[ _instance._curFrame ] != null )
             {
                 _instance._events[ _instance._curFrame ]();
                 ++_instance._curFrame;
             }
-            else
+            else if( _instance._curFrame >= _TICKS_PER_BEAT )
             {
                 _instance._curFrame = 0;
+            }
+            else
+            {
+                ++_instance._curFrame;
             }
         }
 
