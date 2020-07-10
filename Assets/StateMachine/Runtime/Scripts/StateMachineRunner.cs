@@ -11,9 +11,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace com.keg.statemachine
 {
+#if UNITY_EDITOR
+    public static class StateMachineAccessor
+	{
+        public static IStateMachine stateMachine;
+	}
+#endif
+
     public class StateMachineRunner : MonoBehaviour
     {
         private StateMachine _rootStateMachine;
@@ -29,6 +39,9 @@ namespace com.keg.statemachine
         private void OnEnable()
         {
             _rootStateMachine.Setup();
+#if UNITY_EDITOR
+            StateMachineAccessor.stateMachine = _rootStateMachine;
+#endif
         }
 
         // Update is called once per frame

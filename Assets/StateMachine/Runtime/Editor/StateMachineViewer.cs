@@ -23,8 +23,6 @@ namespace com.keg.statemachine
             EditorWindow.GetWindow<StateMachineViewer>();
         }
 
-        private StateMachineRunner _runner;
-
         private void OnGUI()
         {
             if( !Application.isPlaying )
@@ -33,27 +31,10 @@ namespace com.keg.statemachine
                 return;
             }
 
-            if( _runner == null )
+            if( StateMachineAccessor.stateMachine == null )
             {
-                StateMachineRunner[] searchResults = Resources.FindObjectsOfTypeAll<StateMachineRunner>();
-                if( searchResults.Length == 1 )
-                {
-                    _runner = searchResults[ 0 ];
-                }
-                else if( searchResults.Length > 1 )
-                {
-                    DisplayMessage(
-                        string.Format( "FOUND {0} INSTANCES OF StateMachineRunner.  THERE SHOULD ONLY BE ONE.", searchResults.Length ),
-                        Color.red
-                        );
-
-                    return;
-                }
-                else
-                {
-                    DisplayMessage( "No state machines!", Color.yellow );
-                    return;
-                }
+                DisplayMessage( "No state machines!", Color.yellow );
+                return;
             }
 
             DisplayMessage( "Top", Color.white );
@@ -61,7 +42,7 @@ namespace com.keg.statemachine
             GUIStyle cyan = new GUIStyle( EditorStyles.label );
             cyan.normal.textColor = Color.cyan;
 
-            string[] states = _runner.stateMachine.GetStateNames();
+            string[] states = StateMachineAccessor.stateMachine.GetStateNames();
             int count = states.Length;
             for( int i = 0; i < count; ++i )
             {
